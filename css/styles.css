@@ -1,0 +1,20 @@
+body {
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: #111;
+}
+
+#obesity
+{
+	background-color: #e0e0e0;
+	position: relative;
+	display: block;
+	margin: 0 auto;
+}
+#filter{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	opacity: 0;
+}
