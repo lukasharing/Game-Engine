@@ -21,16 +21,26 @@ class Vector2d{
 	/* X/Y Coordinates */
 	set(i, j){ this.setX(i); this.setY(j); };
 	clamp(a,b,c,d){ this.clampX(a,b); this.clampY(c,d); };
-	getModule(){ return Math.sqrt(this.getX() * this.getX() + this.getY() * this.getY()); };
-	getRotation(){ return Math.atan2(this.getY(), this.getX()); };
-	getXDirection(){ return Math.round(this.x / Math.abs(this.x)); }
-	getDotProduct(v){ return Math.abs(v.y * this.y + v.x * this.x) / (this.getModule() * v.getModule()); };
-	addVector(v){ this.x += v.x; this.y += v.y; };
-	mltVector(v){ this.x *= v.x; this.y *= v.y; };
-	multiply(n){ this.x *= n; this.y *= n; }
+	
+	/* Vector properties */
+	getLength(){ return Math.sqrt(this.getX() * this.getX() + this.getY() * this.getY()); };
+	getAngle() { return Math.atan2(this.getY(), this.getX()); };
+	getDotProduct(vec){
+		let x0 = this.getX(), y0 = this.getY();
+		let x1 = vec.getX(), y1 = vec.getY();
+		let length = Math.sqrt((x0 * x0 + y0 * y0)*(x1 * x1 + y1 * y1));
+		return Math.abs(y0 * y1 + x0 * x1) / length;
+	};
+	getXDirection(){ return Math.round(this.x / Math.abs(this.x)); };
+	
+	/* Transform vector. */
+	addVector(vec)	{ this.x += vec.x; this.y += vec.y; };
+	mltVector(vec)	{ this.x *= vec.x; this.y *= vec.y; };
+	multiply(n0, n1){ this.x *= n0; this.y *= n1; };
+	sum(n0, n1)	{ this.x += n0; this.y += n1; };
+	
+	
 	draw(ctx, x, y){
-		var dir = this.getDirection();
-		var dis = this.getModule();
 		ctx.beginPath();
 		ctx.moveTo(x, y);
 		ctx.lineTo(x + this.getX(), y + this.getY());
