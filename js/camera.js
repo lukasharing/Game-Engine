@@ -13,29 +13,38 @@ class Camera{
 
 	update(game){
 		var p = this.getPosition();
-		if(this.pinned !== null){
-			var whalf = game.width >> 1, hhalf = game.height >> 1;
-			var point = this.pinned.getPosition(), position = this.getPosition();
-			var dx = point.getX() - position.getX(), dy = point.getY() - position.getY();
+		let whalf = game.width >> 1;
+		let hhalf = game.height >> 1;
+		if(this.pinned != null){
+			let point = this.pinned.getPosition();
+			let position = this.getPosition();
+
+			// Distances.
+			let dx = point.getX() - position.getX();
+			let dy = point.getY() - position.getY();
+
 			if((dx * dx + dy * dy) > 10000){
 				this.velocity.x += dx / 100;
 				this.velocity.y += dy / 100;
 			}
 
-			this.getVelocity().multiply(0.79);
-			p.addVector(this.getVelocity());
-			p.clamp(whalf, 32 * 32 * (game.chunksLimit + 1) - whalf, hhalf, 32 * 32 - hhalf);
+		}else{
+			this.velocity.x += (game.getKey(68) - game.getKey(65))|0;
+			this.velocity.y += (game.getKey(66) - game.getKey(67))|0;
 		}
+		this.getVelocity().multiply(0.89);
+		p.addVector(this.getVelocity());
+		p.clamp(whalf, 1024 * (game.chunksLimit + 1) - whalf, hhalf, 1024 - hhalf);
 	};
 
 	drawGUI(game, ctx){
-		var entity = this.pinned;
-		var life = Math.round(entity.currentLife * 4 / entity.life);
-		var heart = game.getTexture("heart");
-		for(var l = 0; l < life; l++){
-			for(var h = 0; h < 2; h++){
-				ctx.drawImage(heart, 8 * h, 0, 8, 16, 10 + 20 * l + h * 8, 10, 8, 16);
-			}
-		}
+		// var entity = this.pinned;
+		// var life = Math.round(entity.currentLife * 4 / entity.life);
+		// var heart = game.getTexture("heart");
+		// for(var l = 0; l < life; l++){
+		// 	for(var h = 0; h < 2; h++){
+		// 		ctx.drawImage(heart, 8 * h, 0, 8, 16, 10 + 20 * l + h * 8, 10, 8, 16);
+		// 	}
+		// }
 	};
 }

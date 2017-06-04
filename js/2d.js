@@ -21,10 +21,10 @@ class Vector2d{
 	/* X/Y Coordinates */
 	set(i, j){ this.setX(i); this.setY(j); };
 	clamp(a,b,c,d){ this.clampX(a,b); this.clampY(c,d); };
-	
+
 	/* Vector properties */
 	getLength(){ return Math.sqrt(this.getX() * this.getX() + this.getY() * this.getY()); };
-	getAngle() { return Math.atan2(this.getY(), this.getX()); };
+	getAngle() { return Math.atan2(-this.getY(), this.getX()); };
 	getDotProduct(vec){
 		let x0 = this.getX(), y0 = this.getY();
 		let x1 = vec.getX(), y1 = vec.getY();
@@ -32,14 +32,14 @@ class Vector2d{
 		return Math.abs(y0 * y1 + x0 * x1) / length;
 	};
 	getXDirection(){ return Math.round(this.x / Math.abs(this.x)); };
-	
+
 	/* Transform vector. */
 	addVector(vec)	{ this.x += vec.x; this.y += vec.y; };
 	mltVector(vec)	{ this.x *= vec.x; this.y *= vec.y; };
-	multiply(n0, n1){ this.x *= n0; this.y *= n1; };
+	multiply(n){ this.x *= n; this.y *= n; };
 	sum(n0, n1)	{ this.x += n0; this.y += n1; };
-	
-	
+
+
 	draw(ctx, x, y){
 		ctx.beginPath();
 		ctx.moveTo(x, y);

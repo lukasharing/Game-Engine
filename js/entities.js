@@ -13,8 +13,8 @@ class Entity{
 		/* Movement */
 		this.numOfJumps   = 1;
 		this.jumpsDone    = 0;
-		this.position = new Vector2d(x, y - 62);
-		this.velocity = new Vector2d(0, 0);
+		this.position 		= new Vector2d(x, y - 62);
+		this.velocity 		= new Vector2d(0, 0);
 	};
 
 	/* Constant functions */
@@ -29,7 +29,7 @@ class Entity{
 	};
 
 	/* Movement functions */
-	getPosition(){ return this.position; };
+	getPosition()		{ return this.position; };
 	getVelocity()		{ return this.velocity; };
 	setJumpsDone(n)	{ this.jumpsDone = n; };
 
@@ -38,7 +38,7 @@ class Entity{
 	setLife(n){ this.currentLife = n; };
 	heal(n)		{ this.currentLife = Math.min(100, n + this.currentLife); };
 	damage(n)	{ this.currentLife = Math.max(0, this.currentLife - n) };
-}
+};
 
 class Player extends Entity{
 	constructor(x, y){
@@ -71,32 +71,35 @@ class Player extends Entity{
 
 	checkCollision(game){
 		var hw = this.getWidth() / 2, hh = this.getHeight() / 2;
-		var p = this.getPosition();
-		var yVel = this.getVelocity().getY(), x = p.getX();
-		var yabs = Math.abs(yVel);
+		var yVel = this.getVelocity().getY();
+		var xVel = this.getVelocity().getX();
+		var y = this.getPosition().getY();
+		var x = this.getPosition().getX();
 
 		// Vertical Collision
-		var dy = yabs / yVel;
-		var ft = p.getY() + yVel + hh * dy, ftPos = ft >> 5;
+		var yabs = Math.abs(yVel);
+		var yDirection = (yabs / yVel) | 0;
+		var ft = y + yVel + hh * yDirection;
+		var ftPos = ft >> 5;
 		var lft = game.getBlockInChunk((x - hw) >> 5, ftPos);
 		var mid = game.getBlockInChunk(x >> 5, ftPos);
 		var rgt = game.getBlockInChunk((x + hw) >> 5, ftPos);
 		if(lft.isSolid() | mid.isSolid() | rgt.isSolid()){
 			if(this.velocity.getY() > 0){ this.jumpsDone = 0; }
-			this.getVelocity().setY((ftPos << 5) + yVel * 0.87 - ft + 32 * (dy>>1&1));
+			this.getVelocity().addY((ftPos << 5) - ft + 32 * (yDirection>>1&1));
 		}
 		mid.touchedVertical(this);
 
 		// Horizontal Collision
-		var xVel = this.getVelocity().x, y = p.getY();
 		var xabs = Math.abs(xVel);
-		var dx = xabs / xVel;
-		var rs = p.getX() + xVel + hw * dx, rsPos = rs >> 5;
+		var xDirection = (xabs / xVel) | 0;
+		var rs = x + xVel + hw * xDirection;
+		var rsPos = rs >> 5;
 		var top = game.getBlockInChunk(rsPos, (y - hh) >> 5);
 		var mid = game.getBlockInChunk(rsPos, y >> 5);
 		var btm = game.getBlockInChunk(rsPos, (y + hh) >> 5);
 		if(top.isSolid() | mid.isSolid() | btm.isSolid()){
-			this.getVelocity().setX((rsPos << 5) + xVel * 0.87 - rs + 32 * (dx>>1&1));
+			this.getVelocity().addX((rsPos << 5) - rs + 32 * (xDirection>>1&1));
 		}
 		mid.touchedHorizontal(this);
 	};
@@ -124,4 +127,4 @@ class Player extends Entity{
 		game.writeFont(ctx, 6, 8, 8, "abcdefghijklmnopqrstuvwxyz+-.,:1234567890", "vx: " + (vl.getX()|0) + "px", x, y - 20);
 		game.writeFont(ctx, 6, 8, 8, "abcdefghijklmnopqrstuvwxyz+-.,:1234567890", "vy: " + (vl.getY()|0) + "px", x, y - 10);
 	};
-}
+};

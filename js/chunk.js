@@ -13,7 +13,7 @@ class Chunk{
 	setBlock(g, x, y, b){
 		if(this.isInChunk(x, y)){
 			this.blocks[(y << 5)|x] = b;
-			let type = b.getType(), idx = this.indexChunk;
+			let type = b.getType();
 			/* Near Block Bitwise Algorithm
 					  *
 					* b *
@@ -24,11 +24,12 @@ class Chunk{
 			*/
 			for(let k = 1; k <= 7; k += 2){
 				let i = (k % 3), j = (k / 3)|0;
-				let xb = ((idx << 5) + (x + i - 1)), xc = xb >> 5;
-				let nb = (xc == idx) ? this : g.getChunk(xc);
+				let xb = ((this.indexChunk << 5) + (x + i - 1));
+				let xc = xb >> 5;
+				let nb = (xc == this.indexChunk) ? this : g.getChunk(xc);
 				if(nb != undefined){
-					nb = nb.getBlock(xb, y + j - 1);
-					if(nb != undefined){
+					nb = nb.getBlock(xb%32, y + j - 1);
+					if(nb != null){
 						let t1 = nb.getType();
 						nb.toggleNear(1 - (t1 ^ type), 2 - i, 2 - j);
 						if(t1 == type){ b.toggleNear(1, i, j); }
@@ -43,25 +44,25 @@ class Chunk{
 	};
 
 	getBlock(x, y){
-		return this.isInChunk(x, y) ? this.blocks[(x << 5) | y] : null;
+		return this.isInChunk(x, y) ? this.blocks[(y << 5) | x] : null;
 	};
 
 	draw(game, ctx){
-		let camera = game.getCamera().position;
+		let camera = game.getCamera().getPosition();
 		let hWidth = game.getWidth() >> 1, hHeight = game.getHeight() >> 1;
 
 		/* X Camera Coord Aritmetics */
 		let xCamera = camera.getX();
 		let xChunk = this.indexChunk << 10;
-		let x0 = Math.max(00, Math.floor((xCamera - hWidth - xChunk) / 32));
+		let x0 = Math.max( 0, Math.floor((xCamera - hWidth - xChunk) / 32));
 		let x1 = Math.min(32, Math.ceil((xCamera + hWidth - xChunk) / 32));
-		
+
 		/* Y Camera Coord Aritmetics */
 		let yCamera = camera.getY();
 		let yChunk = (hHeight - yCamera) | 0;
-		let y0 = Math.max(00, Math.floor((yCamera - hHeight) / 32));
+		let y0 = Math.max( 0, Math.floor((yCamera - hHeight) / 32));
 		let y1 = Math.min(32, Math.ceil((yCamera + hHeight) / 32));
-		
+
 		xChunk = (xChunk + hWidth - xCamera) | 0;
 
 		for(let j = y0; j < y1; j++){

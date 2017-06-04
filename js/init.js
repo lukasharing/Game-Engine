@@ -26,8 +26,8 @@ $(document).ready(function(){
 		var yBlock = yCamera >> 5;
 		var cBlock = obesityGame.getBlockInChunk(xBlock, yBlock);
 		var block;
-		if(cBlock instanceof Air){ block = new Ground(); }
-		else{ block = obesityGame.block_AIR; }
+		if(!(cBlock instanceof Air)){ block = obesityGame.block_AIR; }
+		else{ block = new Ground(); }
 		obesityGame.setBlockInChunk(xBlock, yBlock, block);
 	}).bind('contextmenu', function(e) {
 		 e.preventDefault();
